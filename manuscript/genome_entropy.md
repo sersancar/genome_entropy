@@ -34,7 +34,10 @@ Here we test whether the entropy of predicted structural tokens separates annota
 
 ## Overview of the genome_entropy framework
 
-All entropy features were computed with genome_entropy (https://github.com/linsalrob/genome_entropy) [@Edwards2026-jk]. The pipeline takes nucleotide sequences (from either a GenBank or FASTA format file) and:
+All entropy features were computed with
+[genome_entropy](https://github.com/linsalrob/genome_entropy)
+(Edwards 2026).
+The pipeline takes nucleotide sequences (from either a GenBank or FASTA format file) and:
 1. calls every open reading frame (ORF) in all six frames;
 2. translates each ORF with the bacterial genetic code (NCBI table 11);
 3. predicts a structural-alphabet representation of each translated ORF;
@@ -126,7 +129,7 @@ We analysed the species representatives of GTDB release 232 (R11-RS232) [@Parks2
 
 Counted directly from the GenBank records, 92,840 bacterial (48.9%) and 4,630 archaeal (45.7%) genomes carry no deposited CDS. <!-- src: GR §2; GR §6 table --> Almost all are metagenome-assembled genomes (91,610 of 92,840 in bacteria; 4,592 of 4,630 in archaea) that were deposited in GenBank without annotation and never added to RefSeq; every RefSeq representative we processed is annotated. <!-- src: work/review_facts/answers.md §1 (ncbi_genome_category, ncbi_refseq_category); agent-handoffs#35 (over all 189,801 r232 bacterial representatives, 22 RefSeq are unannotated) --> Because we aimed to compare information theory between protein-encoding genes and other open reading frames, we excluded these unannotated genomes from the analysis, leaving 96,875 bacterial and 5,492 archaeal genomes. <!-- src: GR §4; figGS03 caption -->
 
-The GTDB run used `genome_entropy` 0.2.0 with the default `--min-aa 30`. In that version, the runner converted this to 90 nt and passed `-l 90` to `get_orfs`, which interpreted the value as amino acids. The resulting effective minimum was therefore 90 aa—not 30 aa—and no separate filter imposed this floor. This unit-conversion bug was fixed later (#103/#104). Every GTDB statistic is consequently over ORFs of at least 90 aa. <!-- src: Validation/gtdb/scientific_report.md §3; 90c8c15 src/genome_entropy/pipeline/runner.py and src/genome_entropy/orf/finder.py; fix bd57055 -->
+The GTDB run used `genome_entropy` 0.2.0 with the default `--min-aa 30`. In that version, the runner converted this to 90 nt and passed `-l 90` to `get_orfs`, which interpreted the value as amino acids. The resulting effective minimum was therefore 90 aa—not 30 aa—and no separate filter imposed this floor. This unit-conversion bug was fixed in [commit `bd57055`](https://github.com/linsalrob/genome_entropy/commit/bd570553041e20c34f9c0409e00a761b90daa6e7). Every GTDB statistic is consequently over ORFs of at least 90 aa. <!-- src: Validation/gtdb/scientific_report.md §3; 90c8c15 src/genome_entropy/pipeline/runner.py and src/genome_entropy/orf/finder.py; fix bd57055 -->
 
 ORFs were labelled *matched* or *unmatched* against the deposited CDS. In archaeal genomes the six-frame caller recovers about 90% of deposited CDS (median per genome); recall was not measured for bacteria. <!-- src: MP §1; GR §6 "Sensitivity of the ORF caller"; GR §10 -->
 
@@ -152,7 +155,7 @@ The 2.5-bit threshold was set by eye, well above the 1.585-bit ceiling (Results)
 
 We classed shadow ORFs by their frame relative to the overlapped CDS as one of: same frame, same-strand frameshift, antisense, or frame undefined. Frame was read from the start on the plus strand and from the end on the minus strand, but is undefined when the CDS is partial. <!-- src: GR §6.1 "The comparator had to be fixed first" --> We found 3,925,368 bacterial and 133,748 archaeal shadow ORFs. <!-- src: MC item 1 -->
 
-Each candidate ORF (that does not overlap an existing ORF) received one partner without replacement. The partner had the same truncation status, 3Di entropy within ±0.025 bits and length within ±10%. <!-- src: MC item 2 --> Partners were sought first in the same genome, then the same 250-genome chunk, then the whole domain. Candidates left without a partner were retried with wider parameters and finally matched with replacement. In bacteria, 36.7% of partners came from the same genome and 0.16% of draws were with replacement; in archaea the figures were 26.5% and 4.3%. <!-- src: MC item 2 --> The total variation distance from the candidates on a 5 × 5 length × 3Di grid was 0.003 (bacteria) and 0.010 (archaea). <!-- src: MC "Why" table --> Comparator rates are weighted by draw multiplicity.
+Each candidate ORF that does not overlap a deposited CDS received one partner without replacement. The partner had the same truncation status, 3Di entropy within ±0.025 bits and length within ±10%. <!-- src: MC item 2 --> Partners were sought first in the same genome, then the same 250-genome chunk, then the whole domain. Candidates left without a partner were retried with wider parameters and finally matched with replacement. In bacteria, 36.7% of partners came from the same genome and 0.16% of draws were with replacement; in archaea the figures were 26.5% and 4.3%. <!-- src: MC item 2 --> The total variation distance from the candidates on a 5 × 5 length × 3Di grid was 0.003 (bacteria) and 0.010 (archaea). <!-- src: MC "Why" table --> Comparator rates are weighted by draw multiplicity.
 
 There were three further arms:
 - annotated CDS, length-matched, as the positive control;
