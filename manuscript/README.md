@@ -2,7 +2,7 @@
 
 This directory contains the **draft manuscript** describing [`genome_entropy`](../README.md):
 
-> *Joint sequence and structural entropy distinguish protein-coding genes from spurious open reading frames in bacterial genomes and metagenomes.*
+> *Structural entropy distinguishes gene-caller-labelled ORFs and prioritises candidate missed genes.*
 
 The manuscript is a work in progress. Expect the text, figures, and author list to change.
 
