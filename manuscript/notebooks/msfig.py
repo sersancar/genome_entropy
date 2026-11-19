@@ -45,6 +45,15 @@ def style():
     })
 
 
+def capitalise_initial(value):
+    """Uppercase the first letter of a plotted title or axis label."""
+    text = str(value)
+    for index, character in enumerate(text):
+        if character.isalpha():
+            return text[:index] + character.upper() + text[index + 1:]
+    return text
+
+
 def data(name, **kwargs):
     """Read a plotting-ready table from ../data (TSV, optionally .gz)."""
     return pd.read_csv(DATA / name, sep="\t", **kwargs)

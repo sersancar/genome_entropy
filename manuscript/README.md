@@ -45,7 +45,9 @@ The manuscript uses pandoc citations (`[@key]`) and TeX equations. To render it:
 
 ```bash
 pandoc genome_entropy.md --citeproc --bibliography references.bib -s -o genome_entropy.html   # or .docx
+pandoc genome_entropy.md --lua-filter=flow-captions.lua --citeproc --bibliography references.bib -s --pdf-engine=xelatex --variable=mainfont:"DejaVu Serif" -o genome_entropy.pdf
 ```
 
-HTML comments of the form `<!-- src: … -->` record the source of every number, for the final audit. They are not rendered, and are stripped before submission.
+The PDF filter reduces figure and table caption size and gives Figure 4 a full page.
 
+HTML comments of the form `<!-- src: … -->` record the source of every number, for the final audit. They are not rendered, and are stripped before submission.
