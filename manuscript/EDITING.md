@@ -94,6 +94,11 @@ ManuMD remembers the repository, branch and file, so next time you can open the 
 
 - **Views.** The buttons above the text switch between **Split** (Markdown on the left, preview on the right), **Edit** (Markdown only) and **Preview** (formatted only).
 - **Keeping the two panes together.** In Split view, double-click a place in either pane to bring the other pane to the same place. Or turn on **⇅ Sync scroll** to keep them scrolled together.
+- **Views.** The buttons above the text switch between **Split** (Markdown on the left, preview on the right), **Edit** (Markdown only), **Preview** (formatted only) and **Focus** (a distraction-free view that keeps the section you are writing in front of you).
+- **Changing the font size.** Use the **A−** and **A+** buttons in the toolbar to make the text larger or smaller while you work. This change is local to the current view in the browser and does not affect the manuscript file itself.
+- **Keeping the two panes together.** In Split view, double-click a place in either pane to bring the other pane to the same place. Or turn on **⇅ Sync scroll** to keep them scrolled together.
+- **The outline.** The **Outline** panel lists the H1–H3 headings. Click one, or press Enter on it, to jump to that section in both the Markdown and the preview.
+- **Collapsing panels.** Each section of the left-hand panel (Outline, Quick actions, Writing setup and Draft files) can be closed by clicking its heading, which gives you more space for editing.
 - **Editing in the preview.** In Preview view, double-click a paragraph, heading, list item, table row, equation or other block. A small editor opens with that block's Markdown. Make your change, then press **Ctrl+Enter** (**⌘+Enter** on a Mac), click **Apply**, or click elsewhere to apply it. Press **Esc** to cancel. Only that block changes; the rest of the file is untouched.
 - **Formatting.** The **B**, **I**, **H**, quote, code and link buttons wrap the selected text in Markdown, e.g. **Ctrl/⌘+B** for bold.
 
