@@ -64,8 +64,24 @@ def save(fig, slug, formats=("pdf", "png")):
 
     Matplotlib embeds a creation date and its own version in PDF and PNG
     metadata; both are blanked so that re-running a notebook reproduces the
-    committed file byte for byte.
+    committed file byte for byte. Panel letters are sized for the manuscript's
+    final figure width and height so they remain consistent across figures.
     """
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    bounds = fig.get_tightbbox(renderer)
+    scale = min(6.7 / bounds.width, 6.68 / bounds.height)
+    for ax in fig.axes:
+        for text in ax.texts:
+            label = text.get_text().strip()
+            if (
+                len(label) == 1
+                and label.islower()
+                and text.get_fontweight() == "bold"
+                and text.get_fontsize() >= 10
+            ):
+                text.set_fontsize(12 / scale)
+
     IMAGES.mkdir(parents=True, exist_ok=True)
     meta = {
         "pdf": {"CreationDate": None, "ModDate": None, "Producer": None,

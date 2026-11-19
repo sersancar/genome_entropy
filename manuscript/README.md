@@ -41,13 +41,34 @@ To add your details, open a pull request against the `manuscript` branch with th
 
 ## Rendering
 
-The manuscript uses pandoc citations (`[@key]`) and TeX equations. To render it:
+The manuscript uses pandoc citations (`[@key]`) and TeX equations. Run these
+commands from this directory:
 
 ```bash
 pandoc genome_entropy.md --citeproc --bibliography references.bib -s -o genome_entropy.html   # or .docx
-pandoc genome_entropy.md --lua-filter=flow-captions.lua --citeproc --bibliography references.bib -s --pdf-engine=xelatex --variable=mainfont:"DejaVu Serif" -o genome_entropy.pdf
+pandoc genome_entropy.md \
+  --from=markdown+implicit_figures \
+  --citeproc \
+  --bibliography=references.bib \
+  --resource-path="$(pwd)" \
+  --lua-filter=flow-captions.lua \
+  --pdf-engine=xelatex \
+  -V graphics=true \
+  -V papersize=a4 \
+  -V geometry:margin=25mm \
+  -V fontsize=11pt \
+  -V mainfont="DejaVu Sans" \
+  -V sansfont="DejaVu Sans" \
+  -V monofont="DejaVu Sans Mono" \
+  -o genome_entropy.pdf
 ```
 
-The PDF filter reduces figure and table caption size and gives Figure 4 a full page.
+Use `--from=markdown+implicit_figures` (the `+` enables the extension; a `-`
+would disable it) and specify `--from` only once. The Lua filter turns the
+standalone images into larger figures while retaining their Markdown
+descriptions as ordinary text below each image, where long legends can continue
+onto the next page. Keep both `--lua-filter=flow-captions.lua` and `--citeproc`;
+the filter also reduces caption text size and formats tables with seven or more
+columns in landscape with adjusted column widths and smaller text.
 
 HTML comments of the form `<!-- src: … -->` record the source of every number, for the final audit. They are not rendered, and are stripped before submission.

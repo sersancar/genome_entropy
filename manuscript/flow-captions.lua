@@ -1,27 +1,11 @@
-local function has_class(classes, name)
-  for _, class in ipairs(classes) do
-    if class == name then
-      return true
-    end
-  end
-  return false
-end
-
-local function render_figure(src, caption, fullpage)
-  local height = fullpage and '0.88\\textheight' or '0.52\\textheight'
+local function render_figure(src, caption)
   local blocks = {}
-
-  if fullpage then
-    blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\clearpage')
-    blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\newgeometry{margin=0.5in}')
-    src = src:gsub('%.png$', '.pdf')
-  end
 
   blocks[#blocks + 1] = pandoc.RawBlock('latex',
     '\\begin{center}\n' ..
     '\\includegraphics[' ..
     'width=\\linewidth,' ..
-    'height=' .. height .. ',' ..
+    'height=0.62\\textheight,' ..
     'keepaspectratio' ..
     ']{\\detokenize{' .. src .. '}}\n' ..
     '\\end{center}')
@@ -34,12 +18,31 @@ local function render_figure(src, caption, fullpage)
     blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\endgroup')
   end
 
-  if fullpage then
-    blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\clearpage')
-    blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\restoregeometry')
-  end
-
   return blocks
+end
+
+local function table_widths(table)
+  local column_count = #table.colspecs
+  local presets = {
+    [3] = {0.40, 0.30, 0.30},
+    [5] = {0.34, 0.16, 0.16, 0.16, 0.18},
+    [6] = {0.13, 0.28, 0.1475, 0.1475, 0.1475, 0.1475},
+    [7] = {0.28, 0.12, 0.12, 0.12, 0.12, 0.12, 0.12},
+    [8] = {0.13, 0.17, 0.14, 0.10, 0.14, 0.14, 0.08, 0.10},
+  }
+  if column_count == 7 and tostring(table.colspecs[1][1]) == 'AlignRight' then
+    return {0.05, 0.10, 0.16, 0.43, 0.08, 0.08, 0.10}
+  end
+  return presets[column_count]
+end
+
+local function size_table(table)
+  local widths = table_widths(table)
+  if widths then
+    for index, colspec in ipairs(table.colspecs) do
+      table.colspecs[index] = {colspec[1], widths[index]}
+    end
+  end
 end
 
 function Meta(meta)
@@ -56,7 +59,9 @@ function Meta(meta)
       end
     end
     includes[#includes + 1] = pandoc.MetaBlocks({
-      pandoc.RawBlock('latex', '\\usepackage{graphicx}\\usepackage{geometry}')
+      pandoc.RawBlock('latex',
+        '\\usepackage{graphicx}\\usepackage{geometry}' ..
+        '\\usepackage{pdflscape}\\usepackage{needspace}')
     })
     meta['header-includes'] = pandoc.MetaList(includes)
   end
@@ -72,9 +77,7 @@ function Figure(el)
     if block.content then
       for _, inline in ipairs(block.content) do
         if inline.t == 'Image' then
-          local fullpage = has_class(el.attr.classes, 'fullpage') or
-            has_class(inline.classes, 'fullpage')
-          return render_figure(inline.src, el.caption.long or {}, fullpage)
+          return render_figure(inline.src, el.caption.long or {})
         end
       end
     end
@@ -83,13 +86,45 @@ function Figure(el)
   return nil
 end
 
-function Para(el)
-  if FORMAT:match('latex') then
-    local caption = pandoc.utils.stringify(el)
-    if caption:match('^Table%s+%d+%.') then
-      table.insert(el.content, 1, pandoc.RawInline('latex', '\\begingroup\\small '))
-      table.insert(el.content, pandoc.RawInline('latex', '\\endgroup'))
-      return el
+function Pandoc(doc)
+  if not FORMAT:match('latex') then
+    return doc
+  end
+
+  local blocks = {}
+  local index = 1
+  while index <= #doc.blocks do
+    local block = doc.blocks[index]
+    local next_block = doc.blocks[index + 1]
+    local is_table_caption = block.t == 'Para' and
+      pandoc.utils.stringify(block):match('^Table%s+%d+%.')
+
+    if is_table_caption and next_block and next_block.t == 'Table' then
+      local columns = #next_block.colspecs
+      size_table(next_block)
+      local needed_space = columns == 6 and 20 or 4
+      blocks[#blocks + 1] = pandoc.RawBlock('latex',
+        '\\needspace{' .. needed_space .. '\\baselineskip}')
+
+      if columns >= 7 then
+        blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\begin{landscape}')
+      end
+
+      blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\begingroup\\small')
+      blocks[#blocks + 1] = block
+      blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\endgroup')
+      blocks[#blocks + 1] = next_block
+
+      if columns >= 7 then
+        blocks[#blocks + 1] = pandoc.RawBlock('latex', '\\end{landscape}')
+      end
+      index = index + 2
+    else
+      blocks[#blocks + 1] = block
+      index = index + 1
     end
   end
+
+  doc.blocks = blocks
+  return doc
 end
