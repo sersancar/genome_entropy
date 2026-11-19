@@ -1,0 +1,16 @@
+{
+  "07_annotation_genetic_code_audit.py": "0184d35d46f3a778a4d4b6a2d664dc1e925d379e4239f0e8ae365da594474ed3",
+  "09_phage_independent_support.py": "13ef98567d5582fd971ac79502dea35a8c1c469440e4c709ba10cb7d49444f45",
+  "06_threshold_coverage_sensitivity.py": "fdc01feb0d8db70e4a8e96b2a0fe9640095779df524a0fb831ebdd0c233f5dec",
+  "01_gtdb_taxonomic_matching.py": "5c83590a4cf4ac84fb499dd04f052c974278521aab9876eab7c019e956ab0fc7",
+  "_shared.py": "3e7b54c545e54019fc3f5ab75ef551c119cb894c3f216db4f8e420b71e668fe3",
+  "02_gtdb_cluster_bootstrap.py": "7f730f9098497df732e11c7e94661f1d5de4fecf74f08e11ac57c967a3fa442d",
+  "08_amino_acid_composition_baseline.py": "a39b37b37df05ec12ce60cbd6319ad2c2adb4b46a534b0a4bf0cc541674be438",
+  "requirements.txt": "171fbdc54da6570b08d2bbc70986c67513ee924d14bd0cc51baa2faff4982599",
+  "README.md": "21b14175cdbfb031248606591a27086cbfcb12cb52338168e26ca11ee86c85e2",
+  "03_logan_database_taxonomy.py": "212344485d7370df0e4e98a318dec0967212f89ae6bf22d48ecb6370736a1aaf",
+  "04_logan_entropy_matched_shadows.py": "0b756b9acaa7c25c1727c8ac632ad43be70811bae03d7d14397385f311696e27",
+  "05_cross_encoder.py": "3e35ef9ad915817aded382f3f761a9c00d82e2a932d842710ea16e34b4cb6ad0",
+  "VALIDATION.txt": "2303aaeb11571fdcb09e71d0dc874a50409dcf7b0a4d24175b2814294031436d",
+  "tests/test_suite.py": "fa4803ce1d0e17d0c45e5b6370ba04372a4cd29182a758cb9541605d90b739d8"
+}
